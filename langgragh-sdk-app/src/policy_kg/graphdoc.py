@@ -30,6 +30,8 @@ LABELS = (
     "Role",
     "User",
     "FrameworkSource",
+    "Ontology",
+    "Layer",
 )
 
 REL_TYPES = (
@@ -68,6 +70,14 @@ REL_TYPES = (
     "STATED_IN",
     "DEFINED_BY",
     "ACCOUNTABLE",
+    "HAS_LAYER",
+    "IN_LAYER",
+    "FOLLOWS",
+    "HAS_ROLE",
+    "HAS_PARTY",
+    "RESPONSIBLE_PARTY",
+    "REVIEWED_CONTROL",
+    "RELATED_TO_RISK",
 )
 
 KEY_FIELDS: dict[str, tuple[str, ...]] = {
@@ -96,6 +106,8 @@ KEY_FIELDS: dict[str, tuple[str, ...]] = {
     "Role": ("role_id",),
     "User": ("uuid",),
     "FrameworkSource": ("framework_id",),
+    "Ontology": ("uuid",),
+    "Layer": ("layer_id",),
 }
 
 

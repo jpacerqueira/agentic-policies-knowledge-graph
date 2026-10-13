@@ -8,6 +8,10 @@ LangGraph pipeline for a fictional tier-1 bank, Northline Bank plc, uuid `8f3c1a
 
 OSCAL models loaded as JSON: catalog, profile, component-definition, system-security-plan, assessment-plan, assessment-results, plan-of-action-and-milestones. EU AI Act control ids come from the Apache-2.0 catalog at olon-standards/eu-ai-act-oscal (catalog uuid `f7b7352c-0824-4be8-b246-5c745d51c84b`). The offline snapshot is a short restatement with the same catalog uuid. `policy-kg fetch-eu-ai-act` downloads upstream files into `data/cache/eu-ai-act`, which is gitignored. When two catalogs share a uuid, the one with more controls wins. A fetched template SSP that is not tied to an organization system does not expand coverage.
 
+## Ontology
+
+`docs/oscal-layers.md` records the method from the Container Solutions OSCAL-in-Neo4j write-up: each OSCAL model is one layer, nodes merge on uuid or id, and imports or shared uuids connect layers. The eight layer ids, in order, are `catalog`, `profile`, `component-definition`, `system-security-plan`, `assessment-plan`, `assessment-results`, `plan-of-action-and-milestones`, and `policy`. They hang off the `Ontology` node `oscal-control-lifecycle` and follow one another with `FOLLOWS`. A document root has `IN_LAYER`. `policy-kg query layers` is the check. A full rebuild wipes the Neo4j volume.
+
 ## Pipeline
 
 Stages, in order: discover, read_pdfs, extract_policies, load_oscal, align, project, validate, persist.

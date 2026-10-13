@@ -385,6 +385,23 @@ def render_graph(view: dict) -> str:
         "<div class=\"panel\"><p class=\"note\">Policies and the OSCAL ontology currently stored in Neo4j "
         "for Northline Bank plc. This view is not legal advice and not a conformity assessment.</p></div>",
     ]
+    parts.append("<h2>Layers</h2>")
+    layers = view.get("layers") or []
+    if not layers:
+        parts.append("<p>No layers are stored.</p>")
+    for layer in layers:
+        parts.append(
+            _record(
+                str(layer.get("title") or layer.get("layer_id") or "Layer"),
+                "layer",
+                [
+                    ("model", str(layer.get("layer_id") or "")),
+                    ("order", str(layer.get("order") or "")),
+                    ("documents", str(layer.get("documents") or "")),
+                    ("summary", str(layer.get("summary") or "")),
+                ],
+            )
+        )
     parts.append("<h2>Organization</h2>")
     organizations = view.get("organization") or []
     if not organizations:

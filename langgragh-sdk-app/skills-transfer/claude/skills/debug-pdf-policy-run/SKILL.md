@@ -61,6 +61,8 @@ docker compose exec app policy-kg query frameworks
 
 `frameworks` should show `eu-ai-act` with the SCOPE.md URL and the template SSP URL from olon-standards/eu-ai-act-oscal, plus `https://pages.nist.gov/OSCAL/`.
 
+`policy-kg query layers` should list eight layers, from `catalog` through `policy`. If a layer is missing, the database still has the older projection. Rebuild with `docker compose down -v` and `docker compose up -d --build --wait`. The model is `docs/oscal-layers.md`.
+
 If the PDF extracts but the block is split, shorten field lines. The parser appends a wrapped line that has no `=` onto the previous field, which corrupts a control id when the break falls inside the id.
 
 ## Intake page

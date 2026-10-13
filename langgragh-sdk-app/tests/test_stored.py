@@ -7,6 +7,15 @@ from policy_kg.stored import read_stored_graph
 
 ROOT_ROWS = {
     "stored-summary": [{"label": "PolicyStatement", "count": 1}, {"label": "Catalog", "count": 1}],
+    "stored-layers": [
+        {
+            "order": 1,
+            "layer_id": "catalog",
+            "title": "Catalog",
+            "summary": "Lists of controls, groups, parts, and parameters.",
+            "documents": 1,
+        }
+    ],
     "stored-organization": [
         {
             "name": "Northline Bank plc",
@@ -82,6 +91,8 @@ def test_stored_view_lists_policies_and_ontology():
     assert "aia-73" in page
     assert "POL-1" in page
     assert "Ontology" in page
+    assert "Layers" in page
+    assert "catalog" in page
     assert "Northline Bank plc" in page
     assert "validated" in page
     assert "record-action" in page

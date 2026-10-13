@@ -9,6 +9,7 @@ Read `README.md` and `long-term.md` first. This file is the handoff for the next
 - Each submission run is a date-time folder under `submissions/`, bind-mounted into the app container at `/app/submissions`. The contents are gitignored. The baseline scan does not read them.
 - http://localhost:8080/graph shows the policies and the OSCAL ontology stored in Neo4j.
 - Analysis results and the stored graph render each record as a blue box. Field names are blue, values are green, and a mapped policy shows `validated` in the corner.
+- The graph stores eight OSCAL lifecycle layers under `Ontology` `oscal-control-lifecycle`. `docs/oscal-layers.md` is the model. `policy-kg query layers` lists them. http://localhost:8080/graph shows the same list.
 - `policy-kg batch --from-dir` and `policy-kg batch --s3-uri` stage PDFs into one submission folder and can merge them into Neo4j.
 - Skills for those runs: `test-batch-policy-pipeline`, `debug-batch-policy-pipeline`, `test-interactive-policy-app`, `debug-interactive-policy-app`.
 - This folder is the pack to copy to another Cursor account: changes log, Claude skills, Kiro power, and these memory files.

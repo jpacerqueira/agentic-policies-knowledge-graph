@@ -7,6 +7,14 @@ STORED_QUERIES: dict[str, str] = {
         "/* stored-summary */ "
         "MATCH (n) RETURN labels(n)[0] AS label, count(*) AS count ORDER BY label"
     ),
+    "layers": (
+        "/* stored-layers */ "
+        "MATCH (l:Layer) "
+        "OPTIONAL MATCH (n)-[:IN_LAYER]->(l) "
+        "RETURN l.order AS order, l.layer_id AS layer_id, l.title AS title, "
+        "l.summary AS summary, count(DISTINCT n) AS documents "
+        "ORDER BY l.order"
+    ),
     "organization": (
         "/* stored-organization */ "
         "MATCH (o:Organization) "

@@ -15,6 +15,13 @@ QUERIES: dict[str, str] = {
         "WHERE NOT (:PolicyStatement)-[:IMPLEMENTS]->(c) "
         "RETURN DISTINCT c.control_id AS control_id, c.title AS title ORDER BY control_id"
     ),
+    "layers": (
+        "MATCH (o:Ontology)-[h:HAS_LAYER]->(l:Layer) "
+        "OPTIONAL MATCH (n)-[:IN_LAYER]->(l) "
+        "RETURN o.title AS ontology, l.order AS order, l.layer_id AS layer_id, "
+        "l.title AS title, l.summary AS summary, count(DISTINCT n) AS documents "
+        "ORDER BY l.order"
+    ),
     "frameworks": (
         "MATCH (c:Catalog)-[:DEFINED_BY]->(f:FrameworkSource) "
         "RETURN c.title AS catalog, f.framework_id AS framework_id, "

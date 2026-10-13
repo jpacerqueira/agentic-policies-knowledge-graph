@@ -42,6 +42,8 @@ A selected control with no policy fails as `uncovered-control`. A selected contr
 
 The LangGraph stages are `discover`, `read_pdfs`, `extract_policies`, `load_oscal`, `align`, `project`, `validate`, `persist`. Persist runs only when validation is clean. Parsing lives in `src/policy_kg/pdf_reader.py`. OSCAL loading lives in `src/policy_kg/oscal_loader.py`. Alignment lives in `src/policy_kg/align.py`.
 
+`docs/oscal-layers.md` is the ontology. `project` writes eight `Layer` nodes under the `Ontology` `oscal-control-lifecycle`, in lifecycle order, joined by `FOLLOWS`. Each catalog, profile, component definition, system security plan, assessment plan, assessment results document, POA&M, and policy statement has `IN_LAYER`. Nodes merge on uuid or id. `policy-kg query layers` lists them. A full Neo4j rebuild is `docker compose down -v` then `docker compose up -d --build --wait`.
+
 ## Link or sourced PDF
 
 The intake page at http://localhost:8080 (`policy-kg serve`) accepts an http(s) link or an uploaded PDF. `src/policy_kg/intake.py` stores the file under `data/intake/`. `src/policy_kg/analyze.py` uses a policy block when the PDF has one. Otherwise it segments the text and aligns it with the phrase rules and token overlap in `src/policy_kg/align.py`. Checked “add to the knowledge graph” merges that policy without removing the baseline nodes.

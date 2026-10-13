@@ -7,6 +7,18 @@ from pathlib import Path
 from policy_kg.frameworks import FRAMEWORKS
 from policy_kg.graphdoc import GraphDocument, NodeRef
 
+ONTOLOGY_UUID = "oscal-control-lifecycle"
+LAYERS = (
+    ("catalog", "Catalog", "Lists of controls, groups, parts, and parameters. Nodes merge on catalog uuid and control id."),
+    ("profile", "Profile", "Controls selected from an imported catalog, plus parameter values set for this organization."),
+    ("component-definition", "Component definition", "How a component implements a control. Requirements point at the catalog control."),
+    ("system-security-plan", "System security plan", "The operated system, its components, users, roles, parties, and the imported profile."),
+    ("assessment-plan", "Assessment plan", "How the selected controls will be reviewed. It imports the system security plan."),
+    ("assessment-results", "Assessment results", "Findings from that review. It imports the assessment plan and shares parties and roles by uuid."),
+    ("plan-of-action-and-milestones", "Plan of action and milestones", "Corrective items. Each item addresses a control and can relate to a risk."),
+    ("policy", "Policy", "Bank policy statements. A matched statement implements a control in a catalog."),
+)
+
 
 def _props_map(props: list | None) -> dict[str, str]:
     mapped: dict[str, str] = {}
@@ -17,23 +29,56 @@ def _props_map(props: list | None) -> dict[str, str]:
     return mapped
 
 
+def _project_ontology(graph: GraphDocument) -> dict[str, NodeRef]:
+    ontology = graph.merge_node(
+        "Ontology",
+        {"uuid": ONTOLOGY_UUID},
+        {
+            "title": "OSCAL control lifecycle",
+            "method": "Each OSCAL model is one layer. Nodes merge on uuid or id. Shared uuids and import hrefs connect the layers.",
+        },
+    )
+    layers: dict[str, NodeRef] = {}
+    previous: NodeRef | None = None
+    for order, (layer_id, title, summary) in enumerate(LAYERS, start=1):
+        layer = graph.merge_node(
+            "Layer",
+            {"layer_id": layer_id},
+            {"title": title, "summary": summary, "order": order, "model": layer_id},
+        )
+        graph.merge_edge(ontology, "HAS_LAYER", layer, {"order": order})
+        if previous is not None:
+            graph.merge_edge(layer, "FOLLOWS", previous, {})
+        layers[layer_id] = layer
+        previous = layer
+    return layers
+
+
+def _in_layer(graph: GraphDocument, node: NodeRef, layer_id: str, layers: dict[str, NodeRef]) -> None:
+    graph.merge_edge(node, "IN_LAYER", layers[layer_id], {})
+
+
 def _project_metadata(graph: GraphDocument, metadata: dict, owner: NodeRef | None) -> None:
     for role in metadata.get("roles") or []:
         if not role.get("id"):
             continue
-        graph.merge_node(
+        role_ref = graph.merge_node(
             "Role",
             {"role_id": role["id"]},
             {"title": role.get("title", ""), "description": role.get("description", "")},
         )
+        if owner is not None:
+            graph.merge_edge(owner, "HAS_ROLE", role_ref, {})
     for party in metadata.get("parties") or []:
         if not party.get("uuid"):
             continue
-        graph.merge_node(
+        party_ref = graph.merge_node(
             "Party",
             {"uuid": party["uuid"]},
             {"name": party.get("name", ""), "party_type": party.get("type", "")},
         )
+        if owner is not None:
+            graph.merge_edge(owner, "HAS_PARTY", party_ref, {})
     if owner is None:
         return
     for responsible in metadata.get("responsible-parties") or []:
@@ -46,6 +91,12 @@ def _project_metadata(graph: GraphDocument, metadata: dict, owner: NodeRef | Non
                 {"role_id": role_id},
             )
             if role_id:
+                graph.merge_edge(
+                    NodeRef.make("Role", {"role_id": role_id}),
+                    "RESPONSIBLE_PARTY",
+                    NodeRef.make("Party", {"uuid": party_uuid}),
+                    {},
+                )
                 graph.merge_edge(
                     NodeRef.make("Party", {"uuid": party_uuid}),
                     "PERFORMS",
@@ -83,7 +134,7 @@ def _project_org(graph: GraphDocument, organization: dict) -> None:
         graph.merge_edge(org, "OPERATES", system_ref, {})
 
 
-def _project_catalog(graph: GraphDocument, doc: dict, controls: list[dict]) -> None:
+def _project_catalog(graph: GraphDocument, doc: dict, controls: list[dict], layers: dict[str, NodeRef]) -> None:
     body = doc["body"]
     metadata = body.get("metadata") or {}
     framework_id = _props_map(metadata.get("props")).get("framework-id", "")
@@ -96,8 +147,10 @@ def _project_catalog(graph: GraphDocument, doc: dict, controls: list[dict]) -> N
             "oscal_version": metadata.get("oscal-version", ""),
             "framework_id": framework_id,
             "source_path": doc["path"],
+            "layer": "catalog",
         },
     )
+    _in_layer(graph, catalog, "catalog", layers)
     if framework_id:
         info = FRAMEWORKS.get(framework_id, {})
         source = graph.merge_node(
@@ -164,7 +217,7 @@ def _project_catalog(graph: GraphDocument, doc: dict, controls: list[dict]) -> N
             graph.merge_edge(control, "HAS_PARAMETER", param_ref, {})
 
 
-def _project_profile(graph: GraphDocument, doc: dict, bundle: dict) -> None:
+def _project_profile(graph: GraphDocument, doc: dict, bundle: dict, layers: dict[str, NodeRef]) -> None:
     body = doc["body"]
     metadata = body.get("metadata") or {}
     profile = graph.merge_node(
@@ -175,8 +228,10 @@ def _project_profile(graph: GraphDocument, doc: dict, bundle: dict) -> None:
             "version": metadata.get("version", ""),
             "oscal_version": metadata.get("oscal-version", ""),
             "source_path": doc["path"],
+            "layer": "profile",
         },
     )
+    _in_layer(graph, profile, "profile", layers)
     _project_metadata(graph, metadata, profile)
     for selection in bundle["selections"]:
         if selection["profile_uuid"] != body["uuid"] or not selection["found"]:
@@ -247,7 +302,7 @@ def _catalog_for_href(bundle: dict, source_path: str, href: str) -> str | None:
     return None
 
 
-def _project_component_definition(graph: GraphDocument, doc: dict, bundle: dict) -> None:
+def _project_component_definition(graph: GraphDocument, doc: dict, bundle: dict, layers: dict[str, NodeRef]) -> None:
     body = doc["body"]
     metadata = body.get("metadata") or {}
     definition = graph.merge_node(
@@ -257,8 +312,10 @@ def _project_component_definition(graph: GraphDocument, doc: dict, bundle: dict)
             "title": metadata.get("title", ""),
             "source_path": doc["path"],
             "oscal_version": metadata.get("oscal-version", ""),
+            "layer": "component-definition",
         },
     )
+    _in_layer(graph, definition, "component-definition", layers)
     _project_metadata(graph, metadata, definition)
     for component in body.get("components") or []:
         component_ref = graph.merge_node(
@@ -271,6 +328,7 @@ def _project_component_definition(graph: GraphDocument, doc: dict, bundle: dict)
             },
         )
         graph.merge_edge(definition, "DEFINES", component_ref, {})
+        graph.merge_edge(definition, "HAS_COMPONENT", component_ref, {})
         for implementation in component.get("control-implementations") or []:
             catalog_uuid = _catalog_for_href(bundle, doc["path"], implementation.get("source", ""))
             for requirement in implementation.get("implemented-requirements") or []:
@@ -303,7 +361,7 @@ def _profile_uuid_for_ssp(bundle: dict, doc: dict) -> str | None:
     return None
 
 
-def _project_ssp(graph: GraphDocument, doc: dict, bundle: dict) -> None:
+def _project_ssp(graph: GraphDocument, doc: dict, bundle: dict, layers: dict[str, NodeRef]) -> None:
     body = doc["body"]
     metadata = body.get("metadata") or {}
     characteristics = body.get("system-characteristics") or {}
@@ -318,8 +376,10 @@ def _project_ssp(graph: GraphDocument, doc: dict, bundle: dict) -> None:
             "system_uuid": system_uuid,
             "system_name": characteristics.get("system-name", ""),
             "security_sensitivity_level": characteristics.get("security-sensitivity-level", ""),
+            "layer": "system-security-plan",
         },
     )
+    _in_layer(graph, ssp, "system-security-plan", layers)
     _project_metadata(graph, metadata, ssp)
     profile_uuid = _profile_uuid_for_ssp(bundle, doc)
     if profile_uuid and any(item["uuid"] == profile_uuid for item in bundle["documents"] if item["model"] == "profile"):
@@ -350,6 +410,7 @@ def _project_ssp(graph: GraphDocument, doc: dict, bundle: dict) -> None:
         for role_id in user.get("role-ids") or []:
             graph.merge_node("Role", {"role_id": role_id}, {})
             graph.merge_edge(user_ref, "PERFORMS", NodeRef.make("Role", {"role_id": role_id}), {})
+            graph.merge_edge(user_ref, "HAS_ROLE", NodeRef.make("Role", {"role_id": role_id}), {})
     selected = {
         (item["catalog_uuid"], item["control_id"])
         for item in bundle["selections"]
@@ -381,7 +442,7 @@ def _link_import(graph: GraphDocument, owner: NodeRef, rel: str, href: str, sour
             graph.merge_edge(owner, rel, NodeRef.make(label, {"uuid": doc["uuid"]}), {})
 
 
-def _project_assessment_plan(graph: GraphDocument, doc: dict, bundle: dict) -> None:
+def _project_assessment_plan(graph: GraphDocument, doc: dict, bundle: dict, layers: dict[str, NodeRef]) -> None:
     body = doc["body"]
     metadata = body.get("metadata") or {}
     plan = graph.merge_node(
@@ -391,8 +452,10 @@ def _project_assessment_plan(graph: GraphDocument, doc: dict, bundle: dict) -> N
             "title": metadata.get("title", ""),
             "source_path": doc["path"],
             "oscal_version": metadata.get("oscal-version", ""),
+            "layer": "assessment-plan",
         },
     )
+    _in_layer(graph, plan, "assessment-plan", layers)
     _project_metadata(graph, metadata, plan)
     href = (body.get("import-ssp") or {}).get("href", "")
     _link_import(graph, plan, "IMPORTS_SSP", href, doc["path"], bundle, "system-security-plan")
@@ -407,6 +470,7 @@ def _project_assessment_plan(graph: GraphDocument, doc: dict, bundle: dict) -> N
         for profile_ref, _profile_props in graph.outgoing(ssp_ref, "IMPORTS_PROFILE"):
             for control_ref, _control_props in graph.outgoing(profile_ref, "SELECTS"):
                 graph.merge_edge(plan, "REVIEWS", control_ref, {})
+                graph.merge_edge(plan, "REVIEWED_CONTROL", control_ref, {})
     for task in body.get("tasks") or []:
         if not task.get("uuid"):
             continue
@@ -418,14 +482,16 @@ def _project_assessment_plan(graph: GraphDocument, doc: dict, bundle: dict) -> N
         graph.merge_edge(plan, "HAS_TASK", task_ref, {})
 
 
-def _project_assessment_results(graph: GraphDocument, doc: dict, bundle: dict) -> None:
+def _project_assessment_results(graph: GraphDocument, doc: dict, bundle: dict, layers: dict[str, NodeRef]) -> None:
     body = doc["body"]
     metadata = body.get("metadata") or {}
     results = graph.merge_node(
         "AssessmentResults",
         {"uuid": body["uuid"]},
-        {"title": metadata.get("title", ""), "source_path": doc["path"]},
+        {"title": metadata.get("title", ""), "source_path": doc["path"], "layer": "assessment-results"},
     )
+    _in_layer(graph, results, "assessment-results", layers)
+    _project_metadata(graph, metadata, results)
     href = (body.get("import-ap") or {}).get("href", "")
     _link_import(graph, results, "IMPORTS_AP", href, doc["path"], bundle, "assessment-plan")
     known = {(item["catalog_uuid"], item["control_id"]): item["control_id"] for item in bundle["controls"]}
@@ -461,14 +527,15 @@ def _project_assessment_results(graph: GraphDocument, doc: dict, bundle: dict) -
                 )
 
 
-def _project_poam(graph: GraphDocument, doc: dict, bundle: dict) -> None:
+def _project_poam(graph: GraphDocument, doc: dict, bundle: dict, layers: dict[str, NodeRef]) -> None:
     body = doc["body"]
     metadata = body.get("metadata") or {}
     poam = graph.merge_node(
         "PlanOfAction",
         {"uuid": body["uuid"]},
-        {"title": metadata.get("title", ""), "source_path": doc["path"]},
+        {"title": metadata.get("title", ""), "source_path": doc["path"], "layer": "plan-of-action-and-milestones"},
     )
+    _in_layer(graph, poam, "plan-of-action-and-milestones", layers)
     href = (body.get("import-ssp") or {}).get("href", "")
     _link_import(graph, poam, "IMPORTS_SSP", href, doc["path"], bundle, "system-security-plan")
     for risk in body.get("risks") or []:
@@ -512,9 +579,16 @@ def _project_poam(graph: GraphDocument, doc: dict, bundle: dict) -> None:
             risk_uuid = related.get("risk-uuid")
             if risk_uuid:
                 graph.merge_edge(poam_item, "RELATED_RISK", NodeRef.make("Risk", {"uuid": risk_uuid}), {})
+                graph.merge_edge(poam_item, "RELATED_TO_RISK", NodeRef.make("Risk", {"uuid": risk_uuid}), {})
 
 
-def _project_policies(graph: GraphDocument, organization: dict, policies: list[dict], alignments: list[dict]) -> None:
+def _project_policies(
+    graph: GraphDocument,
+    organization: dict,
+    policies: list[dict],
+    alignments: list[dict],
+    layers: dict[str, NodeRef],
+) -> None:
     org = NodeRef.make("Organization", {"uuid": organization["uuid"]})
     systems = {
         system["slug"]: system["uuid"]
@@ -536,8 +610,10 @@ def _project_policies(graph: GraphDocument, organization: dict, policies: list[d
                 "statement": policy.get("statement", ""),
                 "classification": policy.get("classification", ""),
                 "source_path": policy["source_path"],
+                "layer": "policy",
             },
         )
+        _in_layer(graph, statement, "policy", layers)
         graph.merge_edge(document, "CONTAINS_POLICY", statement, {})
         graph.merge_edge(statement, "STATED_IN", document, {})
         graph.merge_edge(org, "OWNS", statement, {})
@@ -561,24 +637,25 @@ def _project_policies(graph: GraphDocument, organization: dict, policies: list[d
 
 def project_graph(organization: dict, policies: list[dict], alignments: list[dict], bundle: dict) -> GraphDocument:
     graph = GraphDocument()
+    layers = _project_ontology(graph)
     _project_org(graph, organization)
     by_model: dict[str, list[dict]] = {}
     for doc in bundle.get("documents") or []:
         by_model.setdefault(doc["model"], []).append(doc)
     for doc in by_model.get("catalog", []):
         controls = [item for item in bundle.get("controls") or [] if item["catalog_uuid"] == doc["uuid"]]
-        _project_catalog(graph, doc, controls)
+        _project_catalog(graph, doc, controls, layers)
     for doc in by_model.get("profile", []):
-        _project_profile(graph, doc, bundle)
+        _project_profile(graph, doc, bundle, layers)
     for doc in by_model.get("component-definition", []):
-        _project_component_definition(graph, doc, bundle)
+        _project_component_definition(graph, doc, bundle, layers)
     for doc in by_model.get("system-security-plan", []):
-        _project_ssp(graph, doc, bundle)
+        _project_ssp(graph, doc, bundle, layers)
     for doc in by_model.get("assessment-plan", []):
-        _project_assessment_plan(graph, doc, bundle)
+        _project_assessment_plan(graph, doc, bundle, layers)
     for doc in by_model.get("assessment-results", []):
-        _project_assessment_results(graph, doc, bundle)
+        _project_assessment_results(graph, doc, bundle, layers)
     for doc in by_model.get("plan-of-action-and-milestones", []):
-        _project_poam(graph, doc, bundle)
-    _project_policies(graph, organization, policies, alignments)
+        _project_poam(graph, doc, bundle, layers)
+    _project_policies(graph, organization, policies, alignments, layers)
     return graph

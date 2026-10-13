@@ -4,6 +4,8 @@ LangGraph pipeline that reads DevSecOps policy PDFs, loads [OSCAL](https://pages
 
 The worked example is **Northline Bank plc**, a fictional tier-1 bank with 100,000 employees. It is not a real institution, not legal advice, and not a conformity assessment. Control ids for the EU AI Act follow the Apache-2.0 catalog at [olon-standards/eu-ai-act-oscal](https://github.com/olon-standards/eu-ai-act-oscal). The offline snapshot uses short local restatements. `policy-kg fetch-eu-ai-act` downloads the upstream catalog, the high-risk provider profile, the [SSP template](https://github.com/olon-standards/eu-ai-act-oscal/blob/main/docs/examples/template-system-security-plan.json), the readiness assessment plan, and [SCOPE.md](https://github.com/olon-standards/eu-ai-act-oscal/blob/main/docs/SCOPE.md).
 
+The control lifecycle is stored as eight layers. Each OSCAL model is one layer, merged on uuid or id, and joined to the next layer by an import or a shared uuid. The policy layer is the bank's own statements. See [docs/oscal-layers.md](docs/oscal-layers.md). `policy-kg query layers` lists them.
+
 ## Pipeline
 
 ```text

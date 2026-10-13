@@ -83,6 +83,8 @@ def test_stored_view_lists_policies_and_ontology():
     assert "POL-1" in page
     assert "Ontology" in page
     assert "Northline Bank plc" in page
+    assert "validated" in page
+    assert "record-action" in page
 
 
 def test_stored_page_says_when_neo4j_is_not_connected():

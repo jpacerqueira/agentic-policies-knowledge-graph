@@ -36,6 +36,7 @@ Confirm both containers are healthy. Then open:
 4. Leave “Add the analyzed policies to the knowledge graph” checked and submit Analyze policy.
 5. The result names the submission folder `submissions/<YYYY-MM-DDTHHMMSS>/`. That directory is on the host and inside the container at `/app/submissions`.
 6. Open http://localhost:8080/graph and confirm the new policy, its controls, and the catalogs, profiles, and control groups.
+7. A mapped policy is a blue record box. Field names are blue, values are green, and the corner action reads `validated`. The stored graph uses the same boxes for the organization, catalogs, profiles, groups, controls, and policies.
 
 An empty submit must say to provide a policy link, PDFs or a local folder, or an S3 folder.
 

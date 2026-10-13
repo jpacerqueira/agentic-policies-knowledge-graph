@@ -153,7 +153,10 @@ def test_link_uses_the_injected_downloader(tmp_path):
     assert (tmp_path / "intake").joinpath(Path(report["submission_dir"]).name).is_dir()
     assert report["persisted"] is False
     assert report["policies"][0]["alignments"][0]["control_id"] == "aia-73"
-    assert "not written" in render_page(report=report)
+    page = render_page(report=report)
+    assert "not written" in page
+    assert "validated" in page
+    assert "record-action" in page
 
 
 class _ErrorBody:

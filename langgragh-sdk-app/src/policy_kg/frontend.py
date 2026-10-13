@@ -200,7 +200,43 @@ def _combine_reports(reports: list[dict], run_dir: Path) -> dict:
     }
 
 
-def _page(title: str, body: str) -> str:
+SITE_CSS = """
+body{margin:0;background:#000;color:#1c1e21;font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;line-height:1.5}
+.topbar{display:flex;align-items:center;justify-content:space-between;background:#fff;color:#1c1e21;padding:8px 16px;box-shadow:rgba(0,0,0,.1) 0 1px 2px 0;position:sticky;top:0;z-index:2}
+.brand{font-family:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;font-weight:700;color:#000063;text-decoration:none;letter-spacing:-.03em;font-size:1.15rem}
+.topbar nav a{color:#1c1e21;text-decoration:none;font-weight:500;padding:4px 12px}
+.topbar nav a:hover{color:#007dff}
+.hero{background:#000;padding:3.25rem 1.5rem 4.5rem}
+.kicker{margin:0 0 .8rem;color:#007dff;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;font-weight:600;letter-spacing:1.44px;text-transform:uppercase}
+.hero h1{margin:0;max-width:18ch;color:#9eb6ff;font-family:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;font-size:36px;font-weight:700;letter-spacing:-.72px;line-height:1.05}
+.sheet{max-width:64rem;margin:-2rem auto 3rem;padding:0 1.25rem}
+.panel{background:#fff;color:#1c1e21;border-radius:16px;padding:1.5rem 1.5rem 1.75rem;box-shadow:0 16px 40px rgba(0,0,0,.28)}
+.panel h2,.sheet>h2{font-family:"Space Grotesk","IBM Plex Sans",system-ui,sans-serif;font-weight:700;letter-spacing:-.02em}
+.panel h2{color:#000063;font-size:32px;margin:1.5rem 0 .5rem}
+.sheet>h2{color:#dbe7ff;font-size:32px;margin:1.75rem 0 .25rem}
+.note{color:#414b60;font-size:18px}
+label{display:block;margin-top:1rem;font-weight:600}
+input[type=url],input[type=text],input[type=file]{width:100%;box-sizing:border-box;margin-top:.35rem;border:1.5px solid #cdd7e6;border-radius:9px;padding:.65rem .75rem;font:inherit;background:#fff;color:#1c1e21}
+button{margin-top:1rem;background:#007dff;color:#fff;border:1.5px solid transparent;border-radius:9px;padding:11px 20px;font-family:inherit;font-size:15px;font-weight:600;box-shadow:0 10px 22px -8px rgba(0,125,255,.55);cursor:pointer}
+.drop{border:1.5px dashed #9bbcf5;border-radius:14px;padding:1.5rem;margin-top:1rem;text-align:center;background:#f5f8fd;color:#1c1e21}
+.drop.ready{border-color:#007dff;box-shadow:0 0 0 4px rgba(0,125,255,.25)}
+.record{background:#0b1030;color:#c7d0f0;border-radius:14px;padding:18px 20px;margin:1rem 0;box-shadow:0 12px 28px -16px rgba(11,16,32,.24),0 0 0 1px rgba(110,168,255,.28)}
+.record-bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:12px}
+.record-name{color:#7f8bb5;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+.record-action{margin-left:auto;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;border-radius:6px;padding:3px 9px;white-space:nowrap}
+.record-action.ok{color:#22d3a7;background:rgba(34,211,167,.14)}
+.record-action.warn{color:#ffb020;background:rgba(255,176,32,.14)}
+.record-body{margin:0;font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.6;color:#c7d0f0;white-space:pre-wrap;word-break:break-word}
+.key{color:#6ea8ff}
+.value{color:#8ee6c8}
+.sheet>p{color:#c5cad3}
+.sheet a{color:#8eb6ff}
+.panel a{color:#007dff}
+code{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+"""
+
+
+def _page(title: str, body: str, *, kicker: str) -> str:
     return "\n".join(
         [
             "<!DOCTYPE html>",
@@ -209,29 +245,61 @@ def _page(title: str, body: str) -> str:
             "<meta charset=\"utf-8\">",
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
             f"<title>{html.escape(title)}</title>",
+            "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">",
+            "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>",
+            "<link href=\"https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap\" rel=\"stylesheet\">",
             "<style>",
-            "body{font-family:Georgia,serif;margin:2rem auto;max-width:64rem;line-height:1.45;color:#1c1c1c}",
-            "h1{font-size:1.6rem} label{display:block;margin-top:1rem;font-weight:600}",
-            "nav a{margin-right:1rem} input[type=url],input[type=file]{width:100%;margin-top:.3rem}",
-            "button{margin-top:1rem;padding:.5rem 1rem} .note{color:#444}",
-            ".finding{margin:.3rem 0} .error{color:#8a1f1f} .policy{border-top:1px solid #ccc;padding-top:1rem}",
-            ".drop{border:2px dashed #888;padding:1.4rem;margin-top:1rem;text-align:center}",
-            ".drop.ready{border-color:#1c1c1c;background:#f4f4f4}",
-            "table{border-collapse:collapse;width:100%;margin:1rem 0}",
-            "td,th{border-bottom:1px solid #ccc;text-align:left;padding:.35rem .4rem;vertical-align:top}",
+            SITE_CSS,
             "</style>",
             "</head>",
             "<body>",
+            "<header class=\"topbar\">",
+            "<a class=\"brand\" href=\"/\">Northline</a>",
             "<nav><a href=\"/\">Add a policy</a><a href=\"/graph\">Stored graph</a></nav>",
+            "</header>",
+            "<main>",
+            "<section class=\"hero\">",
+            f"<p class=\"kicker\">{html.escape(kicker)}</p>",
             f"<h1>{html.escape(title)}</h1>",
-            body,
+            "</section>",
+            f"<div class=\"sheet\">{body}</div>",
+            "</main>",
             "</body></html>",
         ]
     )
 
 
+def _record(name: str, action: str, rows: list[tuple[str, str]], *, tone: str = "ok") -> str:
+    body = "\n".join(
+        f'<span class="key">{html.escape(key)}</span>  <span class="value">{html.escape(value)}</span>'
+        for key, value in rows
+    )
+    return (
+        '<article class="record">'
+        '<header class="record-bar">'
+        f'<span class="record-name">{html.escape(name)}</span>'
+        f'<span class="record-action {html.escape(tone)}">{html.escape(action)}</span>'
+        "</header>"
+        f'<pre class="record-body">{body}</pre>'
+        "</article>"
+    )
+
+
+def _policy_mark(alignments: list[dict] | None, controls: list | None = None) -> tuple[str, str]:
+    if alignments:
+        if any(item.get("status") == "matched" for item in alignments):
+            return "validated", "ok"
+        if any(item.get("status") == "ambiguous" for item in alignments):
+            return "review", "warn"
+        return "unmapped", "warn"
+    if controls:
+        return "validated", "ok"
+    return "unmapped", "warn"
+
+
 def render_page(report: dict | None = None, error: str | None = None) -> str:
     parts = [
+        "<div class=\"panel\">",
         "<p class=\"note\">Add DevSecOps policies for Northline Bank plc, a fictional tier-1 bank. "
         "Drop PDFs or a folder here, choose files, choose a local folder, paste a policy link, "
         "or point at an S3 folder such as <code>s3://bucket/policies/</code>. "
@@ -294,30 +362,28 @@ def render_page(report: dict | None = None, error: str | None = None) -> str:
         "  });",
         "}",
         "</script>",
+        "</div>",
     ]
     if error:
-        parts.append(f"<h2>Could not analyze</h2><p class=\"error\">{html.escape(error)}</p>")
+        parts.append(_record("Analysis", "review", [("message", error)], tone="warn"))
     if report:
         parts.extend(_render_report(report))
-    return _page(PAGE_TITLE, "\n".join(parts))
-
-
-def _join(values: object) -> str:
-    if isinstance(values, (list, tuple)):
-        text = ", ".join(str(item) for item in values if item not in (None, ""))
-    else:
-        text = "" if values is None else str(values)
-    return html.escape(text or "none")
+    return _page(PAGE_TITLE, "\n".join(parts), kicker="Northline Bank")
 
 
 def render_graph(view: dict) -> str:
     if not view.get("connected"):
-        reason = html.escape(str(view.get("reason") or "Neo4j is not connected"))
-        body = f"<p class=\"error\">The stored graph is unavailable. {reason}</p>"
-        return _page(GRAPH_TITLE, body)
+        reason = str(view.get("reason") or "Neo4j is not connected")
+        body = _record(
+            "Stored graph",
+            "unavailable",
+            [("status", f"The stored graph is unavailable. {reason}")],
+            tone="warn",
+        )
+        return _page(GRAPH_TITLE, body, kicker="Knowledge graph")
     parts = [
-        "<p class=\"note\">Policies and the OSCAL ontology currently stored in Neo4j "
-        "for Northline Bank plc. This view is not legal advice and not a conformity assessment.</p>",
+        "<div class=\"panel\"><p class=\"note\">Policies and the OSCAL ontology currently stored in Neo4j "
+        "for Northline Bank plc. This view is not legal advice and not a conformity assessment.</p></div>",
     ]
     parts.append("<h2>Organization</h2>")
     organizations = view.get("organization") or []
@@ -325,139 +391,190 @@ def render_graph(view: dict) -> str:
         parts.append("<p>No organization is stored.</p>")
     for org in organizations:
         parts.append(
-            f"<p>{html.escape(str(org.get('name') or ''))}. "
-            f"Tier {html.escape(str(org.get('tier') or ''))}. "
-            f"{html.escape(str(org.get('employee_count') or ''))} employees. "
-            f"Systems: {_join(org.get('systems'))}.</p>"
+            _record(
+                str(org.get("name") or "Organization"),
+                "stored",
+                [
+                    ("tier", str(org.get("tier") or "")),
+                    ("employees", str(org.get("employee_count") or "")),
+                    ("systems", _plain(org.get("systems"))),
+                ],
+            )
         )
     parts.append("<h2>Ontology</h2>")
-    parts.append("<h3>Catalogs and frameworks</h3>")
+    parts.append("<h2>Catalogs and frameworks</h2>")
     catalogs = view.get("catalogs") or []
     if not catalogs:
         parts.append("<p>No catalogs are stored.</p>")
-    else:
-        parts.append("<table><thead><tr><th>Catalog</th><th>Framework</th><th>Version</th><th>Specification</th></tr></thead><tbody>")
-        for catalog in catalogs:
-            parts.append(
-                "<tr>"
-                f"<td>{html.escape(str(catalog.get('title') or ''))}</td>"
-                f"<td>{html.escape(str(catalog.get('framework_id') or catalog.get('framework_title') or ''))}</td>"
-                f"<td>{html.escape(str(catalog.get('version') or ''))}</td>"
-                f"<td>{html.escape(str(catalog.get('specification') or ''))}</td>"
-                "</tr>"
+    for catalog in catalogs:
+        parts.append(
+            _record(
+                str(catalog.get("title") or "Catalog"),
+                "stored",
+                [
+                    ("framework", str(catalog.get("framework_id") or catalog.get("framework_title") or "")),
+                    ("version", str(catalog.get("version") or "")),
+                    ("specification", str(catalog.get("specification") or "")),
+                ],
             )
-        parts.append("</tbody></table>")
-    parts.append("<h3>Profiles</h3>")
+        )
+    parts.append("<h2>Profiles</h2>")
     profiles = view.get("profiles") or []
     if not profiles:
         parts.append("<p>No profiles are stored.</p>")
     for profile in profiles:
+        selected = profile.get("controls") or []
+        action, tone = ("validated", "ok") if selected else ("stored", "ok")
         parts.append(
-            f"<p>{html.escape(str(profile.get('title') or ''))}. "
-            f"Catalogs: {_join(profile.get('catalogs'))}. "
-            f"Selected controls: {_join(profile.get('controls'))}.</p>"
+            _record(
+                str(profile.get("title") or "Profile"),
+                action,
+                [
+                    ("catalogs", _plain(profile.get("catalogs"))),
+                    ("controls", _plain(selected)),
+                ],
+                tone=tone,
+            )
         )
-    parts.append("<h3>Control groups</h3>")
+    parts.append("<h2>Control groups</h2>")
     groups = view.get("groups") or []
     if not groups:
         parts.append("<p>No control groups are stored.</p>")
-    else:
-        parts.append("<table><thead><tr><th>Group</th><th>Title</th></tr></thead><tbody>")
-        for group in groups:
-            parts.append(
-                "<tr>"
-                f"<td>{html.escape(str(group.get('group_id') or ''))}</td>"
-                f"<td>{html.escape(str(group.get('title') or ''))}</td>"
-                "</tr>"
+    for group in groups:
+        parts.append(
+            _record(
+                str(group.get("group_id") or "Group"),
+                "stored",
+                [("title", str(group.get("title") or ""))],
             )
-        parts.append("</tbody></table>")
-    parts.append("<h3>Controls</h3>")
+        )
+    parts.append("<h2>Controls</h2>")
     controls = view.get("controls") or []
     if not controls:
         parts.append("<p>No controls are stored.</p>")
-    else:
+    for control in controls:
+        linked = control.get("policies") or []
+        action, tone = ("validated", "ok") if linked else ("stored", "ok")
         parts.append(
-            "<table><thead><tr><th>Catalog</th><th>Control</th><th>Title</th><th>Policies</th></tr></thead><tbody>"
-        )
-        for control in controls:
-            parts.append(
-                "<tr>"
-                f"<td>{html.escape(str(control.get('catalog') or ''))}</td>"
-                f"<td>{html.escape(str(control.get('control_id') or ''))}</td>"
-                f"<td>{html.escape(str(control.get('title') or ''))}</td>"
-                f"<td>{_join(control.get('policies'))}</td>"
-                "</tr>"
+            _record(
+                str(control.get("control_id") or "Control"),
+                action,
+                [
+                    ("catalog", str(control.get("catalog") or "")),
+                    ("title", str(control.get("title") or "")),
+                    ("policies", _plain(linked)),
+                ],
+                tone=tone,
             )
-        parts.append("</tbody></table>")
+        )
     parts.append("<h2>Policies</h2>")
     policies = view.get("policies") or []
     if not policies:
         parts.append("<p>No policies are stored.</p>")
     for policy in policies:
-        parts.append("<section class=\"policy\">")
-        parts.append(f"<h3>{html.escape(str(policy.get('policy_id') or ''))}</h3>")
-        parts.append(f"<p>{html.escape(str(policy.get('title') or ''))}</p>")
+        action, tone = _policy_mark(None, policy.get("controls") or [])
         parts.append(
-            f"<p>Owner: {html.escape(str(policy.get('owner') or ''))}. "
-            f"Applies to: {_join(policy.get('systems'))}. "
-            f"Controls: {_join(policy.get('controls'))}.</p>"
+            _record(
+                str(policy.get("policy_id") or "Policy"),
+                action,
+                [
+                    ("title", str(policy.get("title") or "")),
+                    ("owner", str(policy.get("owner") or "")),
+                    ("systems", _plain(policy.get("systems"))),
+                    ("controls", _plain(policy.get("controls"))),
+                    ("statement", str(policy.get("statement") or "")),
+                ],
+                tone=tone,
+            )
         )
-        parts.append(f"<p>{html.escape(str(policy.get('statement') or ''))}</p>")
-        parts.append("</section>")
     summary = view.get("summary") or []
     if summary:
-        parts.append("<h2>Stored nodes</h2><ul>")
-        for row in summary:
-            parts.append(
-                f"<li>{html.escape(str(row.get('label') or ''))}: {html.escape(str(row.get('count') or ''))}</li>"
+        parts.append("<h2>Stored nodes</h2>")
+        parts.append(
+            _record(
+                "Stored nodes",
+                "stored",
+                [(str(row.get("label") or ""), str(row.get("count") or "")) for row in summary],
             )
-        parts.append("</ul>")
-    return _page(GRAPH_TITLE, "\n".join(parts))
+        )
+    return _page(GRAPH_TITLE, "\n".join(parts), kicker="Knowledge graph")
+
+
+def _plain(values: object) -> str:
+    if isinstance(values, (list, tuple)):
+        text = ", ".join(str(item) for item in values if item not in (None, ""))
+    else:
+        text = "" if values is None else str(values)
+    return text or "none"
 
 
 def _render_report(report: dict) -> list[str]:
     labels = {"upload": "uploaded PDFs", "link": "policy link", "s3": "S3 folder", "mixed": "mixed sources"}
     origin = labels.get(str(report.get("origin") or ""), "submission")
-    lines = [
-        "<h2>Analysis</h2>",
-        f"<p>Source: {html.escape(origin)}. Kind: {html.escape(str(report.get('source_kind', '')))}. "
-        f"SHA-256: {html.escape(str(report.get('sha256', '')))}.</p>",
+    findings = list(report.get("findings") or [])
+    has_error = any(item.get("severity") == "error" for item in findings)
+    if has_error:
+        summary_action, summary_tone = "review", "warn"
+    elif report.get("persisted"):
+        summary_action, summary_tone = "validated", "ok"
+    else:
+        summary_action, summary_tone = "not stored", "warn"
+    written = (
+        "The analyzed policy was merged into the knowledge graph."
+        if report.get("persisted")
+        else "The analyzed policy was not written to the knowledge graph."
+    )
+    rows = [
+        ("source", origin),
+        ("kind", str(report.get("source_kind", ""))),
+        ("sha256", str(report.get("sha256", ""))),
+        ("result", written),
     ]
     if report.get("submission_dir"):
-        lines.append(f"<p>Submission folder: {html.escape(str(report['submission_dir']))}.</p>")
-    if report.get("persisted"):
-        lines.append("<p>The analyzed policy was merged into the knowledge graph.</p>")
-    else:
-        lines.append("<p>The analyzed policy was not written to the knowledge graph.</p>")
-    findings = report.get("findings") or []
+        rows.insert(3, ("submission", str(report["submission_dir"])))
+    lines = [
+        "<h2>Analysis</h2>",
+        _record("Analysis", summary_action, rows, tone=summary_tone),
+    ]
     if findings:
         lines.append("<h2>Findings</h2>")
         for finding in findings:
-            css = "finding error" if finding.get("severity") == "error" else "finding"
+            tone = "warn" if finding.get("severity") == "error" else "ok"
+            action = "review" if finding.get("severity") == "error" else "noted"
             lines.append(
-                f"<p class=\"{css}\">{html.escape(str(finding.get('code', '')))}: "
-                f"{html.escape(str(finding.get('message', '')))}</p>"
+                _record(
+                    str(finding.get("code") or "finding"),
+                    action,
+                    [("message", str(finding.get("message") or ""))],
+                    tone=tone,
+                )
             )
     lines.append("<h2>Policies</h2>")
     policies = report.get("policies") or []
     if not policies:
         lines.append("<p>No policy statement was extracted.</p>")
     for policy in policies:
+        alignments = list(policy.get("alignments") or [])
         controls = ", ".join(
             f"{item.get('control_id')} ({item.get('method')}, {item.get('status')})"
-            for item in policy.get("alignments") or []
+            for item in alignments
         ) or "none"
         applies = ", ".join(policy.get("applies_to") or []) or "not stated"
-        lines.append("<section class=\"policy\">")
-        lines.append(f"<h3>{html.escape(str(policy.get('policy_id', '')))}</h3>")
-        lines.append(f"<p>{html.escape(str(policy.get('title', '')))}</p>")
+        action, tone = _policy_mark(alignments)
         lines.append(
-            f"<p>Owner: {html.escape(str(policy.get('owner', '')))}. "
-            f"Applies to: {html.escape(applies)}.</p>"
+            _record(
+                str(policy.get("policy_id") or "Policy"),
+                action,
+                [
+                    ("title", str(policy.get("title") or "")),
+                    ("owner", str(policy.get("owner") or "")),
+                    ("applies_to", applies),
+                    ("statement", str(policy.get("statement") or "")),
+                    ("controls", controls),
+                ],
+                tone=tone,
+            )
         )
-        lines.append(f"<p>{html.escape(str(policy.get('statement', '')))}</p>")
-        lines.append(f"<p>Controls: {html.escape(controls)}</p>")
-        lines.append("</section>")
     lines.append('<p><a href="/graph">Open the stored graph</a></p>')
     return lines
 

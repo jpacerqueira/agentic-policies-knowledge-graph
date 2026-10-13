@@ -33,6 +33,7 @@ docker compose ps
 | Submission folder missing on the host | The compose file must mount `./submissions:/app/submissions`. |
 | New policy missing from `/graph` | The checkbox to add policies was cleared, or the statement had no matched control. `unmapped-policy` is still stored as a policy node, but the policies query only lists `IMPLEMENTS` edges. |
 | Sample run fails with `missing-policy-block` | A sourced PDF was placed in `data/policies/`. Keep uploads under `submissions/`. |
+| Corner action is `unmapped` or `review` | The statement did not match one control. `validated` means a control was matched or a stored policy implements a control. |
 
 The stored page at http://localhost:8080/graph lists the organization, catalogs, frameworks, profiles, control groups, controls, and policy statements. Compare it with:
 

@@ -1,0 +1,26 @@
+name: policy-kg-test
+
+services:
+  neo4j:
+    image: neo4j:5.26-community
+    container_name: policy-kg-test-neo4j
+    ports:
+      - "7475:7474"
+      - "7688:7687"
+    environment:
+      NEO4J_AUTH: neo4j/policy-graph-test
+      NEO4J_server_memory_heap_initial__size: 512m
+      NEO4J_server_memory_heap_max__size: 512m
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    networks:
+      - policy-kg-test
+
+networks:
+  policy-kg-test:
+    name: policy-kg-test-net
+    driver: bridge

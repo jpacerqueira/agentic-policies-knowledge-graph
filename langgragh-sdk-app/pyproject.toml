@@ -1,0 +1,33 @@
+[project]
+name = "policy-kg"
+version = "0.1.0"
+description = "LangGraph pipeline that loads DevSecOps policy PDFs and OSCAL into a Neo4j knowledge graph"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+dependencies = [
+  "langgraph>=0.4,<2",
+  "pypdf>=5,<7",
+  "neo4j>=5.26,<7",
+  "fpdf2>=2.8,<3",
+  "boto3>=1.35,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<9",
+]
+
+[project.scripts]
+policy-kg = "policy_kg.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

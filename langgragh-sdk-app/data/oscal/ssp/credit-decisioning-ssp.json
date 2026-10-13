@@ -1,0 +1,129 @@
+{
+  "system-security-plan": {
+    "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5001",
+    "metadata": {
+      "title": "Northline Bank credit decisioning system security plan",
+      "published": "2026-10-13T00:00:00Z",
+      "last-modified": "2026-10-13T00:00:00Z",
+      "version": "0.1.0",
+      "oscal-version": "1.1.2",
+      "roles": [
+        {"id": "ciso", "title": "Chief Information Security Officer"},
+        {"id": "human-oversight", "title": "Human oversight of credit decisions"}
+      ],
+      "parties": [
+        {
+          "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d9001",
+          "type": "person",
+          "name": "Office of the CISO"
+        }
+      ],
+      "responsible-parties": [
+        {
+          "role-id": "ciso",
+          "party-uuids": ["8f3c1a20-6b14-4d7e-9c31-0a6e5b7d9001"]
+        }
+      ],
+      "remarks": "Fictional OSCAL SSP for a tier-1 bank. It follows the shape of the EU AI Act template SSP and asserts nothing about a real system."
+    },
+    "import-profile": {
+      "href": "../profiles/northline-tier1-profile.json"
+    },
+    "system-characteristics": {
+      "system-ids": [
+        {
+          "identifier-type": "https://ietf.org/rfc/rfc4122",
+          "id": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d2001"
+        }
+      ],
+      "system-name": "Credit Decisioning Platform",
+      "description": "High-risk creditworthiness AI system and the delivery toolchain that builds it.",
+      "security-sensitivity-level": "high",
+      "system-information": {
+        "information-types": [
+          {
+            "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5301",
+            "title": "Credit application data",
+            "description": "Application features, decision outcome, and model version used for a consumer credit decision.",
+            "confidentiality-impact": {"base": "fips-199-moderate"},
+            "integrity-impact": {"base": "fips-199-high"},
+            "availability-impact": {"base": "fips-199-moderate"}
+          }
+        ]
+      },
+      "security-impact-level": {
+        "security-objective-confidentiality": "moderate",
+        "security-objective-integrity": "high",
+        "security-objective-availability": "moderate"
+      },
+      "status": {"state": "operational"},
+      "authorization-boundary": {
+        "description": "The credit model service, its decision API, the CI/CD platform that releases it, and the secrets service that holds its keys."
+      },
+      "props": [
+        {"name": "risk-classification", "value": "high-risk (Article 6 / Annex III 5(b))"},
+        {"name": "operator-role", "value": "provider,deployer"}
+      ]
+    },
+    "system-implementation": {
+      "users": [
+        {
+          "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d9101",
+          "title": "Credit decision reviewer",
+          "role-ids": ["human-oversight"],
+          "authorized-privileges": [
+            {
+              "title": "Interrupt an automated credit outcome",
+              "functions-performed": ["stop or return the application for manual review"]
+            }
+          ]
+        }
+      ],
+      "components": [
+        {
+          "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6002",
+          "type": "software",
+          "title": "Credit decisioning model service",
+          "description": "Online service that scores a credit application and records the model version.",
+          "status": {"state": "operational"}
+        },
+        {
+          "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6003",
+          "type": "software",
+          "title": "Payments and model delivery pipeline",
+          "description": "CI/CD platform that builds, signs, and promotes payment and model releases.",
+          "status": {"state": "operational"}
+        },
+        {
+          "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6004",
+          "type": "service",
+          "title": "Secrets service",
+          "description": "Approved store for application secrets and signing keys.",
+          "status": {"state": "operational"}
+        }
+      ]
+    },
+    "control-implementation": {
+      "description": "One implemented requirement for each control selected by the Northline tier-1 profile.",
+      "implemented-requirements": [
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5101", "control-id": "aia-6", "description": "Credit decisioning is recorded as Annex III point 5(b). No Article 6(3) derogation is claimed."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5102", "control-id": "aia-9", "description": "Lifecycle risk management is documented in POL-AIR-007 and reviewed on model change."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5103", "control-id": "aia-10", "description": "Training and production credit data are catalogued, access-controlled, and checked for errors."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5104", "control-id": "aia-12", "description": "Each decision stores inputs, model version, and outcome under POL-LOG-005."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5105", "control-id": "aia-14", "description": "Credit decision reviewers can interrupt an automated outcome under POL-ACC-004."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5106", "control-id": "aia-15", "description": "Accuracy limits and endpoint protections are required before a model is promoted. Residual gap is tracked in the POA&M."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5107", "control-id": "aia-17", "description": "Model and service changes pass the quality system described in POL-SSD-001."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5108", "control-id": "aia-73", "description": "Serious incidents in the credit system follow the reporting deadlines in POL-INC-006."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5109", "control-id": "aia-99", "description": "Compliance records penalty exposure for missed AI obligations under POL-REG-008."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5110", "control-id": "ds-cm-1", "description": "Production changes require peer review and a change record under POL-SSD-001."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5111", "control-id": "ds-ci-1", "description": "The delivery pipeline signs release artifacts and rejects unsigned production deploys."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5112", "control-id": "ds-sc-1", "description": "Secrets and signing keys are held in the secrets service under POL-SEC-002."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5113", "control-id": "ds-vm-1", "description": "Dependencies are scanned every 7 days, the value set on ds-vm-1_prm_1."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5114", "control-id": "ds-au-1", "description": "Admin and release events are logged under POL-LOG-005."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5115", "control-id": "ds-ac-1", "description": "Workforce and privileged access follow POL-ACC-004."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5116", "control-id": "ds-ir-1", "description": "Security incidents have an owner and a severity under POL-INC-006."},
+        {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d5117", "control-id": "ds-sb-1", "description": "Each production release stores an SBOM and build provenance."}
+      ]
+    }
+  }
+}

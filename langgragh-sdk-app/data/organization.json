@@ -1,0 +1,30 @@
+{
+  "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d1001",
+  "name": "Northline Bank plc",
+  "tier": 1,
+  "employee_count": 100000,
+  "sector": "banking",
+  "jurisdictions": ["EU", "United Kingdom"],
+  "fictional": true,
+  "remarks": "Fictional tier-1 bank used to exercise the pipeline. Not a real institution and not a conformity claim.",
+  "systems": [
+    {
+      "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d2001",
+      "slug": "credit-decisioning",
+      "name": "Credit Decisioning Platform",
+      "description": "Consumer credit scoring and decisioning. The bank is both provider and deployer of this high-risk AI system.",
+      "risk_classification": "high-risk",
+      "annex_iii": "5(b) creditworthiness",
+      "operator_roles": ["provider", "deployer"]
+    },
+    {
+      "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d2002",
+      "slug": "payments-delivery",
+      "name": "Payments Delivery Platform",
+      "description": "CI/CD, artifact signing, and runtime delivery for payment services used by about 100000 staff and customers.",
+      "risk_classification": "devsecops-platform",
+      "annex_iii": "",
+      "operator_roles": ["operator"]
+    }
+  ]
+}

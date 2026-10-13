@@ -1,0 +1,39 @@
+{
+  "plan-of-action-and-milestones": {
+    "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d8001",
+    "metadata": {
+      "title": "Northline Bank credit decisioning plan of action and milestones",
+      "last-modified": "2026-10-13T00:00:00Z",
+      "version": "0.1.0",
+      "oscal-version": "1.1.2"
+    },
+    "import-ssp": {
+      "href": "../ssp/credit-decisioning-ssp.json"
+    },
+    "risks": [
+      {
+        "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d8003",
+        "title": "Accuracy metric not baselined",
+        "description": "The credit model does not yet have an approved accuracy threshold and measurement window.",
+        "statement": "Promoting further model versions without a baseline leaves the accuracy obligation incomplete.",
+        "status": "open"
+      }
+    ],
+    "poam-items": [
+      {
+        "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d8002",
+        "title": "Baseline the credit-model accuracy metric",
+        "description": "Model risk will set the accuracy metric and threshold, then attach the first measurement to the model card.",
+        "props": [
+          {
+            "name": "control-id",
+            "value": "aia-15"
+          }
+        ],
+        "related-risks": [
+          {"risk-uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d8003"}
+        ]
+      }
+    ]
+  }
+}

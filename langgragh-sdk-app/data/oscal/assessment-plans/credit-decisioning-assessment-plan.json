@@ -1,0 +1,36 @@
+{
+  "assessment-plan": {
+    "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d7001",
+    "metadata": {
+      "title": "Northline Bank credit decisioning readiness assessment plan",
+      "last-modified": "2026-10-13T00:00:00Z",
+      "version": "0.1.0",
+      "oscal-version": "1.1.2"
+    },
+    "import-ssp": {
+      "href": "../ssp/credit-decisioning-ssp.json"
+    },
+    "reviewed-controls": {
+      "control-selections": [
+        {
+          "description": "All controls selected by the imported system profile.",
+          "include-all": {}
+        }
+      ]
+    },
+    "tasks": [
+      {
+        "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d7101",
+        "type": "action",
+        "title": "Confirm Annex III classification",
+        "description": "Confirm the credit decisioning platform is high-risk under Article 6 and Annex III point 5(b)."
+      },
+      {
+        "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d7102",
+        "type": "action",
+        "title": "Examine DevSecOps evidence",
+        "description": "Sample pipeline logs, SBOMs, access reviews, and incident tickets for the selected controls."
+      }
+    ]
+  }
+}

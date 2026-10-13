@@ -1,0 +1,236 @@
+{
+  "catalog": {
+    "uuid": "f7b7352c-0824-4be8-b246-5c745d51c84b",
+    "metadata": {
+      "title": "EU AI Act offline snapshot for the Northline baseline",
+      "last-modified": "2026-10-13T00:00:00Z",
+      "version": "0.1.0",
+      "oscal-version": "1.1.2",
+      "props": [
+        {
+          "name": "framework-id",
+          "value": "eu-ai-act"
+        }
+      ],
+      "remarks": "Offline subset using the upstream catalog uuid and control ids from olon-standards/eu-ai-act-oscal. Statements here are local restatements, not the upstream catalog text and not the Official Journal."
+    },
+    "groups": [
+      {
+        "id": "chapter-iii",
+        "title": "High-Risk AI Systems",
+        "groups": [
+          {
+            "id": "chapter-iii-section-1",
+            "title": "Classification",
+            "controls": [
+              {
+                "id": "aia-6",
+                "class": "eu-ai-act-obligation",
+                "title": "Classification of high-risk AI systems",
+                "props": [
+                  {"name": "label", "value": "Article 6"},
+                  {"name": "article", "value": "6"}
+                ],
+                "parts": [
+                  {
+                    "id": "aia-6_smt",
+                    "name": "statement",
+                    "prose": "Classify each AI system, and record when a creditworthiness use case makes it high-risk."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "chapter-iii-section-2",
+            "title": "Requirements for high-risk AI systems",
+            "controls": [
+              {
+                "id": "aia-9",
+                "class": "eu-ai-act-obligation",
+                "title": "Risk management system",
+                "props": [
+                  {"name": "label", "value": "Article 9"},
+                  {"name": "article", "value": "9"}
+                ],
+                "parts": [
+                  {
+                    "id": "aia-9_smt",
+                    "name": "statement",
+                    "prose": "Keep a lifecycle risk management system for the high-risk AI system and review it when the system changes."
+                  }
+                ]
+              },
+              {
+                "id": "aia-10",
+                "class": "eu-ai-act-obligation",
+                "title": "Data and data governance",
+                "props": [
+                  {"name": "label", "value": "Article 10"},
+                  {"name": "article", "value": "10"}
+                ],
+                "parts": [
+                  {
+                    "id": "aia-10_smt",
+                    "name": "statement",
+                    "prose": "Document training, validation, and production data, including access limits and checks for errors and bias."
+                  }
+                ]
+              },
+              {
+                "id": "aia-12",
+                "class": "eu-ai-act-obligation",
+                "title": "Record-keeping",
+                "props": [
+                  {"name": "label", "value": "Article 12"},
+                  {"name": "article", "value": "12"}
+                ],
+                "parts": [
+                  {
+                    "id": "aia-12_smt",
+                    "name": "statement",
+                    "prose": "Log the events needed to trace a credit decision back to its inputs and model version."
+                  }
+                ]
+              },
+              {
+                "id": "aia-14",
+                "class": "eu-ai-act-obligation",
+                "title": "Human oversight",
+                "props": [
+                  {"name": "label", "value": "Article 14"},
+                  {"name": "article", "value": "14"}
+                ],
+                "parts": [
+                  {
+                    "id": "aia-14_smt",
+                    "name": "statement",
+                    "prose": "Assign people who can understand, review, and interrupt an automated credit outcome."
+                  }
+                ]
+              },
+              {
+                "id": "aia-15",
+                "class": "eu-ai-act-obligation",
+                "title": "Accuracy, robustness and cybersecurity",
+                "props": [
+                  {"name": "label", "value": "Article 15"},
+                  {"name": "article", "value": "15"}
+                ],
+                "parts": [
+                  {
+                    "id": "aia-15_smt",
+                    "name": "statement",
+                    "prose": "Set accuracy and robustness limits, and protect the model and its endpoints against unauthorized access."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "chapter-iii-section-3",
+            "title": "Obligations of providers and deployers",
+            "controls": [
+              {
+                "id": "aia-17",
+                "class": "eu-ai-act-obligation",
+                "title": "Quality management system",
+                "props": [
+                  {"name": "label", "value": "Article 17"},
+                  {"name": "article", "value": "17"}
+                ],
+                "parts": [
+                  {
+                    "id": "aia-17_smt",
+                    "name": "statement",
+                    "prose": "Run a quality management system that covers design, testing, change, and post-release monitoring of the AI system."
+                  }
+                ]
+              },
+              {
+                "id": "aia-18",
+                "class": "eu-ai-act-obligation",
+                "title": "Documentation retention",
+                "props": [
+                  {"name": "label", "value": "Article 18"},
+                  {"name": "article", "value": "18"}
+                ],
+                "params": [
+                  {
+                    "id": "aia-18_prm_1",
+                    "label": "documentation retention period",
+                    "values": ["10 years"]
+                  }
+                ],
+                "parts": [
+                  {
+                    "id": "aia-18_smt",
+                    "name": "statement",
+                    "prose": "Keep the technical documentation for the statutory retention period. This control is in the catalog and is not selected by the Northline profile."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "chapter-ix",
+        "title": "Post-market monitoring and incidents",
+        "groups": [
+          {
+            "id": "chapter-ix-section-2",
+            "title": "Serious incidents",
+            "controls": [
+              {
+                "id": "aia-73",
+                "class": "eu-ai-act-obligation",
+                "title": "Serious incident reporting",
+                "props": [
+                  {"name": "label", "value": "Article 73"},
+                  {"name": "article", "value": "73"}
+                ],
+                "params": [
+                  {
+                    "id": "aia-73_prm_1",
+                    "label": "early serious-incident report deadline",
+                    "values": ["2 days"]
+                  }
+                ],
+                "parts": [
+                  {
+                    "id": "aia-73_smt",
+                    "name": "statement",
+                    "prose": "Detect a serious incident and report it within the statutory deadlines, including the early 2 day report."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "chapter-xii",
+        "title": "Penalties",
+        "controls": [
+          {
+            "id": "aia-99",
+            "class": "eu-ai-act-obligation",
+            "title": "Penalties",
+            "props": [
+              {"name": "label", "value": "Article 99"},
+              {"name": "article", "value": "99"}
+            ],
+            "parts": [
+              {
+                "id": "aia-99_smt",
+                "name": "statement",
+                "prose": "Record the administrative-fine exposure that follows a missed AI obligation, using the statutory ceilings as the upper bound."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

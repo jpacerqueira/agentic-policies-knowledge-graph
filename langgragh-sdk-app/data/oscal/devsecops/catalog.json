@@ -1,0 +1,133 @@
+{
+  "catalog": {
+    "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d3001",
+    "metadata": {
+      "title": "Northline Bank DevSecOps catalog",
+      "last-modified": "2026-10-13T00:00:00Z",
+      "version": "0.1.0",
+      "oscal-version": "1.1.2",
+      "props": [
+        {
+          "name": "framework-id",
+          "value": "northline-devsecops"
+        }
+      ]
+    },
+    "groups": [
+      {
+        "id": "delivery",
+        "title": "Secure delivery",
+        "controls": [
+          {
+            "id": "ds-cm-1",
+            "class": "devsecops-control",
+            "title": "Production change control",
+            "parts": [
+              {
+                "id": "ds-cm-1_smt",
+                "name": "statement",
+                "prose": "Peer-review production changes and keep a change record that names the approver and the artifact."
+              }
+            ]
+          },
+          {
+            "id": "ds-ci-1",
+            "class": "devsecops-control",
+            "title": "Pipeline integrity and signing",
+            "parts": [
+              {
+                "id": "ds-ci-1_smt",
+                "name": "statement",
+                "prose": "Sign release artifacts in the pipeline and reject unsigned deployments to production."
+              }
+            ]
+          },
+          {
+            "id": "ds-sb-1",
+            "class": "devsecops-control",
+            "title": "SBOM and provenance",
+            "parts": [
+              {
+                "id": "ds-sb-1_smt",
+                "name": "statement",
+                "prose": "Store an SBOM and the build provenance with each production release."
+              }
+            ]
+          },
+          {
+            "id": "ds-sc-1",
+            "class": "devsecops-control",
+            "title": "Secrets and key management",
+            "parts": [
+              {
+                "id": "ds-sc-1_smt",
+                "name": "statement",
+                "prose": "Keep application secrets and signing keys in the approved secrets service."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "operations",
+        "title": "Operate and respond",
+        "controls": [
+          {
+            "id": "ds-vm-1",
+            "class": "devsecops-control",
+            "title": "Vulnerability and dependency management",
+            "params": [
+              {
+                "id": "ds-vm-1_prm_1",
+                "label": "vulnerability scan cadence"
+              }
+            ],
+            "parts": [
+              {
+                "id": "ds-vm-1_smt",
+                "name": "statement",
+                "prose": "Scan dependencies on the organization-defined cadence and track exploitable findings to a fix or a time-bounded exception."
+              }
+            ]
+          },
+          {
+            "id": "ds-au-1",
+            "class": "devsecops-control",
+            "title": "Audit logging",
+            "parts": [
+              {
+                "id": "ds-au-1_smt",
+                "name": "statement",
+                "prose": "Log security-relevant administration and release events and retain them for investigation."
+              }
+            ]
+          },
+          {
+            "id": "ds-ac-1",
+            "class": "devsecops-control",
+            "title": "Workforce and privileged access",
+            "parts": [
+              {
+                "id": "ds-ac-1_smt",
+                "name": "statement",
+                "prose": "Grant access by role, review it, and remove it when the role ends. Privileged access needs a named approver."
+              }
+            ]
+          },
+          {
+            "id": "ds-ir-1",
+            "class": "devsecops-control",
+            "title": "Incident response",
+            "parts": [
+              {
+                "id": "ds-ir-1_smt",
+                "name": "statement",
+                "prose": "Give every security incident an owner, a severity, and a note of customer impact."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

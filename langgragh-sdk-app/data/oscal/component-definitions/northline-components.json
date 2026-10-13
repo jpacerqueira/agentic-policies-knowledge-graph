@@ -1,0 +1,71 @@
+{
+  "component-definition": {
+    "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6001",
+    "metadata": {
+      "title": "Northline Bank delivery and credit components",
+      "last-modified": "2026-10-13T00:00:00Z",
+      "version": "0.1.0",
+      "oscal-version": "1.1.2"
+    },
+    "components": [
+      {
+        "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6002",
+        "type": "software",
+        "title": "Credit decisioning model service",
+        "description": "Online service that scores a credit application and records the model version.",
+        "control-implementations": [
+          {
+            "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6402",
+            "source": "../eu-ai-act/catalog.json",
+            "description": "Model-service portion of the high-risk requirements.",
+            "implemented-requirements": [
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6201", "control-id": "aia-9", "description": "The service refuses a promotion when the risk review is missing."},
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6202", "control-id": "aia-10", "description": "The service reads only data sets named in the model card."},
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6203", "control-id": "aia-14", "description": "The decision API exposes an interrupt used by the credit decision reviewer."},
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6204", "control-id": "aia-15", "description": "The service requires authenticated, encrypted access."}
+            ]
+          }
+        ]
+      },
+      {
+        "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6003",
+        "type": "software",
+        "title": "Payments and model delivery pipeline",
+        "description": "CI/CD platform that builds, signs, and promotes payment and model releases.",
+        "control-implementations": [
+          {
+            "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6401",
+            "source": "../devsecops/catalog.json",
+            "description": "Pipeline controls for the tier-1 delivery platform.",
+            "implemented-requirements": [
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6101", "control-id": "ds-cm-1", "description": "A production job requires a recorded peer approval."},
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6102", "control-id": "ds-ci-1", "description": "The pipeline signs artifacts and blocks unsigned deploys."},
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6103", "control-id": "ds-sb-1", "description": "The pipeline publishes an SBOM beside the signed artifact."},
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6104", "control-id": "ds-sc-1", "description": "Jobs fetch secrets at runtime from the secrets service."},
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6105", "control-id": "ds-vm-1", "description": "Dependency scan runs on every build and on the 7 day cadence."},
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6106", "control-id": "ds-au-1", "description": "Pipeline admin and deploy events are shipped to the audit log."},
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6107", "control-id": "ds-ac-1", "description": "Privileged pipeline roles require a named approver."},
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6108", "control-id": "ds-ir-1", "description": "A failed signed deploy opens an incident with an owner."}
+            ]
+          }
+        ]
+      },
+      {
+        "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6004",
+        "type": "service",
+        "title": "Secrets service",
+        "description": "Approved store for application secrets and signing keys.",
+        "control-implementations": [
+          {
+            "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6403",
+            "source": "../devsecops/catalog.json",
+            "description": "Key storage for signing and runtime secrets.",
+            "implemented-requirements": [
+              {"uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d6301", "control-id": "ds-sc-1", "description": "Signing keys cannot be exported to a developer workstation."}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "profile": {
+    "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d4001",
+    "metadata": {
+      "title": "Northline Bank tier-1 baseline",
+      "last-modified": "2026-10-13T00:00:00Z",
+      "version": "0.1.0",
+      "oscal-version": "1.1.2",
+      "roles": [
+        {"id": "ciso", "title": "Chief Information Security Officer"},
+        {"id": "provider", "title": "AI system provider"},
+        {"id": "deployer", "title": "AI system deployer"}
+      ],
+      "parties": [
+        {
+          "uuid": "8f3c1a20-6b14-4d7e-9c31-0a6e5b7d1001",
+          "type": "organization",
+          "name": "Northline Bank plc"
+        }
+      ],
+      "responsible-parties": [
+        {
+          "role-id": "ciso",
+          "party-uuids": ["8f3c1a20-6b14-4d7e-9c31-0a6e5b7d1001"]
+        }
+      ]
+    },
+    "imports": [
+      {
+        "href": "../eu-ai-act/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "aia-6",
+              "aia-9",
+              "aia-10",
+              "aia-12",
+              "aia-14",
+              "aia-15",
+              "aia-17",
+              "aia-73",
+              "aia-99"
+            ]
+          }
+        ]
+      },
+      {
+        "href": "../devsecops/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ds-cm-1",
+              "ds-ci-1",
+              "ds-sb-1",
+              "ds-sc-1",
+              "ds-vm-1",
+              "ds-au-1",
+              "ds-ac-1",
+              "ds-ir-1"
+            ]
+          }
+        ]
+      }
+    ],
+    "merge": {"as-is": true},
+    "modify": {
+      "set-parameters": [
+        {
+          "param-id": "ds-vm-1_prm_1",
+          "values": ["7 days"]
+        }
+      ]
+    }
+  }
+}

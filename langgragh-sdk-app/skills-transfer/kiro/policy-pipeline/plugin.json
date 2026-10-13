@@ -1,0 +1,26 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "policy-pipeline",
+  "version": "1.0.0",
+  "description": "Code, test, deploy, and debug a LangGraph run that loads DevSecOps PDF policies into an OSCAL knowledge graph on Neo4j, including batch folder and S3 runs and the interactive intake app.",
+  "author": {
+    "name": "agentic-policies-knowledge-graph"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "pdf",
+    "policy",
+    "oscal",
+    "neo4j",
+    "langgraph",
+    "devsecops",
+    "knowledge graph",
+    "eu ai act",
+    "pipeline",
+    "deploy",
+    "debug",
+    "batch",
+    "s3",
+    "interactive"
+  ]
+}

@@ -27,6 +27,12 @@ docker compose exec app policy-kg query gaps
 
 Open http://localhost:8080 to add policies. Drop PDFs or a folder on the page, choose files, choose a local folder, paste an http(s) link, or enter an S3 folder such as `s3://bucket/policies/`. A PDF that contains a policy block uses that block. A sourced PDF without a block is split into statements and aligned to the loaded OSCAL catalogs. Leave “Add the analyzed policies to the knowledge graph” checked to merge the result into Neo4j.
 
+### Sample analysis pipeline run
+
+The terminal rebuilds `policy-kg-neo4j` and `policy-kg-app` until Neo4j is healthy. The browser is the intake page at http://localhost:8080/analyze after a sourced PDF: the analysis record says the policy was merged, and the findings name the sourced text and any statement that did not match a control.
+
+![Sample analysis pipeline run](images/sample-analysis-pipeline-run.png)
+
 Each submission run is written to its own date-time folder under `submissions/`. That directory is bind-mounted into the app container at `/app/submissions` and is not committed. The baseline scan of `data/policies/*.pdf` does not read it.
 
 http://localhost:8080/graph shows the policies and the OSCAL ontology stored in Neo4j: organization, catalogs, frameworks, profiles, control groups, controls, and policy statements.

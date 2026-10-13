@@ -29,7 +29,7 @@ Open http://localhost:8080 to add policies. Drop PDFs or a folder on the page, c
 
 ### Sample analysis pipeline run
 
-The terminal rebuilds `policy-kg-neo4j` and `policy-kg-app` until Neo4j is healthy. The browser is the intake page at http://localhost:8080/analyze after a sourced PDF: the analysis record says the policy was merged, and the findings name the sourced text and any statement that did not match a control.
+The terminal is the finished pipeline: node and relationship counts, the stage trace through `persist`, then `Policy intake listening`. The browser is http://localhost:8080/analyze after a sourced PDF. The analysis record says the policy was merged, and the findings name the sourced text and any statement that did not match a control.
 
 ![Sample analysis pipeline run](images/sample-analysis-pipeline-run.png)
 

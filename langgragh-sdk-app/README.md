@@ -25,7 +25,7 @@ docker compose exec app policy-kg query gaps
 
 Open http://localhost:8080 to add policies. Drop PDFs or a folder on the page, choose files, choose a local folder, paste an http(s) link, or enter an S3 folder such as `s3://bucket/policies/`. A PDF that contains a policy block uses that block. A sourced PDF without a block is split into statements and aligned to the loaded OSCAL catalogs. Leave “Add the analyzed policies to the knowledge graph” checked to merge the result into Neo4j.
 
-Each submission run is written to its own date-time folder under `submittions/`. That directory is bind-mounted into the app container at `/app/submittions` and is not committed. The baseline scan of `data/policies/*.pdf` does not read it.
+Each submission run is written to its own date-time folder under `submissions/`. That directory is bind-mounted into the app container at `/app/submissions` and is not committed. The baseline scan of `data/policies/*.pdf` does not read it.
 
 http://localhost:8080/graph shows the policies and the OSCAL ontology stored in Neo4j: organization, catalogs, frameworks, profiles, control groups, controls, and policy statements.
 
@@ -36,16 +36,16 @@ docker compose exec app policy-kg batch \
   --from-dir data/incoming \
   --oscal-dir data/oscal \
   --organization data/organization.json \
-  --intake-dir submittions
+  --intake-dir submissions
 
 docker compose exec app policy-kg batch \
   --s3-uri s3://bucket/policies/ \
   --oscal-dir data/oscal \
   --organization data/organization.json \
-  --intake-dir submittions
+  --intake-dir submissions
 ```
 
-S3 uses the AWS default credential chain inside the container. Do not put access keys in the repository. A host folder must sit under `./data` or `./submittions` to be visible in the container.
+S3 uses the AWS default credential chain inside the container. Do not put access keys in the repository. A host folder must sit under `./data` or `./submissions` to be visible in the container.
 
 Neo4j Browser is at http://localhost:7474 (`neo4j` / `policy-graph-local`). That password is for this container only. Bolt on the host is `localhost:7687`. Inside the network the app uses `bolt://neo4j:7687`.
 

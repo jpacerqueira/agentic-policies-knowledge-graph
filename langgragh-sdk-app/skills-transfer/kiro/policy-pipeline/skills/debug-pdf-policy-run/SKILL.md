@@ -65,6 +65,6 @@ If the PDF extracts but the block is split, shorten field lines. The parser appe
 
 ## Intake page
 
-The page is http://localhost:8080 inside the running stack. `docker compose logs app` shows pipeline and server output. A link must be `http` or `https`. `File is not a PDF` means the bytes do not start with `%PDF`. `unreadable-pdf` means pypdf could not read the file. `sourced-text` means the PDF had no policy block and the page analyzed the extracted text. `no-extractable-text` means the file had nothing long enough to align. An upload is stored under `submittions/<date-time>/` and does not enter the baseline `data/policies/*.pdf` scan.
+The page is http://localhost:8080 inside the running stack. `docker compose logs app` shows pipeline and server output. A link must be `http` or `https`. `File is not a PDF` means the bytes do not start with `%PDF`. `unreadable-pdf` means pypdf could not read the file. `sourced-text` means the PDF had no policy block and the page analyzed the extracted text. `no-extractable-text` means the file had nothing long enough to align. An upload is stored under `submissions/<date-time>/` and does not enter the baseline `data/policies/*.pdf` scan.
 
 Batch failures: follow `debug-batch-policy-pipeline`. Interactive app failures: follow `debug-interactive-policy-app`. The stored ontology is http://localhost:8080/graph.

@@ -26,7 +26,7 @@ Docker Compose project `policy-kg`. Containers `policy-kg-neo4j` and `policy-kg-
 
 App password `policy-graph-local` is a local default, not a production secret. Host ports: Neo4j 7474 and 7687, policy intake 8080. Inside the network the app uses `bolt://neo4j:7687`.
 
-`list_pdfs` reads only `*.pdf` in the top of the policy directory. `submittions/<YYYY-MM-DDTHHMMSS>/` holds each interactive or batch submission and must stay out of that scan. The host directory is mounted at `/app/submittions`.
+`list_pdfs` reads only `*.pdf` in the top of the policy directory. `submissions/<YYYY-MM-DDTHHMMSS>/` holds each interactive or batch submission and must stay out of that scan. The host directory is mounted at `/app/submissions`.
 
 ## Package
 

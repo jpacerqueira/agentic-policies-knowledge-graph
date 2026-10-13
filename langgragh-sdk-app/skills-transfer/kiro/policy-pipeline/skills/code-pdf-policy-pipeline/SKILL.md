@@ -46,7 +46,7 @@ The LangGraph stages are `discover`, `read_pdfs`, `extract_policies`, `load_osca
 
 The intake page at http://localhost:8080 (`policy-kg serve`) accepts an http(s) link or an uploaded PDF. `src/policy_kg/intake.py` stores the file under `data/intake/`. `src/policy_kg/analyze.py` uses a policy block when the PDF has one. Otherwise it segments the text and aligns it with the phrase rules and token overlap in `src/policy_kg/align.py`. Checked “add to the knowledge graph” merges that policy without removing the baseline nodes.
 
-Do not put sourced PDFs in `data/policies/`. The baseline scan reads only top-level `*.pdf` files there, and a file without a policy block fails the sample run as `missing-policy-block`. Interactive and batch runs write each submission under `submittions/<YYYY-MM-DDTHHMMSS>/`, which is outside that scan and bind-mounted into the app container.
+Do not put sourced PDFs in `data/policies/`. The baseline scan reads only top-level `*.pdf` files there, and a file without a policy block fails the sample run as `missing-policy-block`. Interactive and batch runs write each submission under `submissions/<YYYY-MM-DDTHHMMSS>/`, which is outside that scan and bind-mounted into the app container.
 
 ## Finish
 

@@ -14,8 +14,8 @@ def test_app_compose_uses_a_dedicated_network_for_both_containers():
     assert "profiles:" not in text
     entry = (ROOT / "docker" / "entrypoint.sh").read_text(encoding="utf-8")
     assert "policy-kg serve" in entry
-    assert "submittions" in entry
-    assert "./submittions:/app/submittions" in text
+    assert "submissions" in entry
+    assert "./submissions:/app/submissions" in text
 
 
 def test_pytest_compose_uses_a_different_network():

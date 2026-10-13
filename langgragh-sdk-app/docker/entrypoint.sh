@@ -17,4 +17,4 @@ exec policy-kg serve \
   --port 8080 \
   --oscal-dir data/oscal \
   --organization data/organization.json \
-  --intake-dir submittions
+  --intake-dir submissions

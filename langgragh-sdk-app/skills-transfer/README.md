@@ -20,7 +20,7 @@ The skills are:
 - `test-pdf-policy-pipeline` — run the suite and fix a failing test without hiding the gap
 - `deploy-pdf-policy-pipeline` — start the Compose stack and check the GitHub Actions deploy workflow
 - `debug-pdf-policy-run` — read finding codes, Neo4j errors, and a failed intake
-- `test-batch-policy-pipeline` — test a folder or S3 batch run and its `submittions` date-time folder
+- `test-batch-policy-pipeline` — test a folder or S3 batch run and its `submissions` date-time folder
 - `debug-batch-policy-pipeline` — debug a failed `policy-kg batch` run
 - `test-interactive-policy-app` — test drag-and-drop, local folder, S3 folder, and the stored-graph page
 - `debug-interactive-policy-app` — debug the intake page and http://localhost:8080/graph

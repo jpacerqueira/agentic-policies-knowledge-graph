@@ -34,9 +34,9 @@ Confirm both containers are healthy. Then open:
 2. Or choose PDF files, or choose a local folder.
 3. Or paste an http(s) link, or an S3 folder `s3://bucket/policies/`.
 4. Leave “Add the analyzed policies to the knowledge graph” checked and submit Analyze policy.
-5. The result names the submission folder `submittions/<YYYY-MM-DDTHHMMSS>/`. That directory is on the host and inside the container at `/app/submittions`.
+5. The result names the submission folder `submissions/<YYYY-MM-DDTHHMMSS>/`. That directory is on the host and inside the container at `/app/submissions`.
 6. Open http://localhost:8080/graph and confirm the new policy, its controls, and the catalogs, profiles, and control groups.
 
 An empty submit must say to provide a policy link, PDFs or a local folder, or an S3 folder.
 
-`docker compose exec app policy-kg query gaps` stays `[]` for the sample baseline. Imported files must not appear as `missing-policy-block` on the next container start, because `submittions/` is outside `data/policies/*.pdf`.
+`docker compose exec app policy-kg query gaps` stays `[]` for the sample baseline. Imported files must not appear as `missing-policy-block` on the next container start, because `submissions/` is outside `data/policies/*.pdf`.

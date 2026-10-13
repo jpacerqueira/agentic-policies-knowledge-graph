@@ -76,7 +76,7 @@ def test_folder_batch_copies_pdfs_into_one_submission_run(tmp_path):
         s3_uris=[],
         oscal_dir=OSCAL,
         organization_path=ORG,
-        intake_dir=tmp_path / "submittions",
+        intake_dir=tmp_path / "submissions",
         store=NullStore(),
         persist=True,
     )
@@ -84,9 +84,9 @@ def test_folder_batch_copies_pdfs_into_one_submission_run(tmp_path):
     assert result["persisted"] is True
     assert result["documents"][0]["policies"][0]["controls"] == ["aia-73"]
     run_dir = Path(result["submission_dir"])
-    assert run_dir.parent == tmp_path / "submittions"
+    assert run_dir.parent == tmp_path / "submissions"
     assert list(run_dir.glob("*.pdf"))
-    assert not list((tmp_path / "submittions").glob("*.pdf"))
+    assert not list((tmp_path / "submissions").glob("*.pdf"))
 
 
 def test_s3_folder_downloads_only_pdfs_into_the_submission_run(tmp_path):
@@ -107,7 +107,7 @@ def test_s3_folder_downloads_only_pdfs_into_the_submission_run(tmp_path):
         s3_uris=["s3://policy-bucket/policies/"],
         oscal_dir=OSCAL,
         organization_path=ORG,
-        intake_dir=tmp_path / "submittions",
+        intake_dir=tmp_path / "submissions",
         store=NullStore(),
         persist=False,
         s3_source=source,
@@ -170,7 +170,7 @@ def test_cli_batch_from_a_folder_can_skip_neo4j(tmp_path, monkeypatch):
             "--organization",
             str(ORG),
             "--intake-dir",
-            str(tmp_path / "submittions"),
+            str(tmp_path / "submissions"),
             "--skip-neo4j",
             "--report",
             str(report),

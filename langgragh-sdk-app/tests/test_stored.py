@@ -54,7 +54,7 @@ ROOT_ROWS = {
             "owner": "Chief Information Security Officer",
             "statement": "Report a serious incident.",
             "classification": "Internal",
-            "source_path": "submittions/run/policy.pdf",
+            "source_path": "submissions/run/policy.pdf",
             "controls": ["aia-73"],
             "systems": ["credit-decisioning"],
         }

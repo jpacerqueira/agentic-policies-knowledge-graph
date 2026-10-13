@@ -76,7 +76,7 @@ def test_page_explains_link_or_pdf():
     assert "webkitdirectory" in page
     assert "Drop PDF files or a folder here" in page
     assert "s3://bucket/policies/" in page
-    assert "submittions" in page
+    assert "submissions" in page
     assert "not legal advice" in page
 
 
@@ -149,7 +149,7 @@ def test_link_uses_the_injected_downloader(tmp_path):
         }
     )
     assert report["origin"] == "link"
-    assert "submittions" not in report["submission_dir"]
+    assert "submissions" not in report["submission_dir"]
     assert (tmp_path / "intake").joinpath(Path(report["submission_dir"]).name).is_dir()
     assert report["persisted"] is False
     assert report["policies"][0]["alignments"][0]["control_id"] == "aia-73"

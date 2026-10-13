@@ -3,7 +3,7 @@ name: debug-batch-policy-pipeline
 description: >-
   Debugs a failed batch ingest of policy PDFs from a folder or an S3 folder.
   Use when policy-kg batch exits 1 or 2, an S3 prefix returns no documents, or
-  a submission folder is missing from submittions.
+  a submission folder is missing from submissions.
 ---
 
 # Debug a batch policy run
@@ -15,7 +15,7 @@ policy-kg batch \
   --from-dir data/incoming \
   --oscal-dir data/oscal \
   --organization data/organization.json \
-  --intake-dir submittions \
+  --intake-dir submissions \
   --skip-neo4j \
   --report /tmp/policy-kg-batch.json
 ```
@@ -28,7 +28,7 @@ Exit 0: every document was read. Exit 1: a document failed, or the folder or S3 
 
 | What you see | What to change |
 | --- | --- |
-| `Folder not found` | Pass a directory that exists inside the container. Host paths must be under `./data` or `./submittions`. |
+| `Folder not found` | Pass a directory that exists inside the container. Host paths must be under `./data` or `./submissions`. |
 | `Folder contains no PDF files` | The scan is recursive and only accepts `.pdf`. |
 | `S3 location contains no PDF objects` | Check the prefix. Non-PDF keys are skipped. |
 | `S3 location must look like s3://bucket/prefix` | Use the `s3://` scheme and a bucket name. |

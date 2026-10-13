@@ -235,7 +235,7 @@ def render_page(report: dict | None = None, error: str | None = None) -> str:
         "<p class=\"note\">Add DevSecOps policies for Northline Bank plc, a fictional tier-1 bank. "
         "Drop PDFs or a folder here, choose files, choose a local folder, paste a policy link, "
         "or point at an S3 folder such as <code>s3://bucket/policies/</code>. "
-        "Each submission run is stored in its own date-time folder under <code>submittions</code>, "
+        "Each submission run is stored in its own date-time folder under <code>submissions</code>, "
         "which is shared with the app container and is not part of the sample policy scan. "
         "This page is not legal advice and not a conformity assessment.</p>",
         "<form id=\"intake\" action=\"/analyze\" method=\"post\" enctype=\"multipart/form-data\">",

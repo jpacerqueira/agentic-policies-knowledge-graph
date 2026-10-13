@@ -224,5 +224,5 @@ langgragh-sdk-app/.venv/
 langgragh-sdk-app/data/cache/
 langgragh-sdk-app/data/intake/*
 !langgragh-sdk-app/data/intake/.gitkeep
-langgragh-sdk-app/submittions/*
-!langgragh-sdk-app/submittions/.gitkeep
+langgragh-sdk-app/submissions/*
+!langgragh-sdk-app/submissions/.gitkeep

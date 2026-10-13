@@ -20,7 +20,7 @@ docker compose up -d --build --wait
 
 `make deploy` is that command. Both containers stay up. The app container runs the pipeline once Neo4j is healthy, then serves the policy intake page on port 8080. Neo4j Browser stays at http://localhost:7474. The intake page is http://localhost:8080. The stored policies and ontology are at http://localhost:8080/graph.
 
-`submittions/` on the host is mounted at `/app/submittions` in `policy-kg-app`. Do not commit files dropped there.
+`submissions/` on the host is mounted at `/app/submissions` in `policy-kg-app`. Do not commit files dropped there.
 
 Check the load from the app container, which is on `policy-kg-net`:
 

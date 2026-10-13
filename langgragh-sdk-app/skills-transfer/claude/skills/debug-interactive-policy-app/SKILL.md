@@ -30,9 +30,9 @@ docker compose ps
 | `Could not read the S3 folder` | The S3 URI or the AWS credential chain failed. Do not put keys in the repo. |
 | `File is not a PDF` | A link did not return a PDF. |
 | `Neo4j is not connected` on `/graph` | The server was started with `--skip-neo4j`, or Bolt to `neo4j:7687` failed. |
-| Submission folder missing on the host | The compose file must mount `./submittions:/app/submittions`. |
+| Submission folder missing on the host | The compose file must mount `./submissions:/app/submissions`. |
 | New policy missing from `/graph` | The checkbox to add policies was cleared, or the statement had no matched control. `unmapped-policy` is still stored as a policy node, but the policies query only lists `IMPLEMENTS` edges. |
-| Sample run fails with `missing-policy-block` | A sourced PDF was placed in `data/policies/`. Keep uploads under `submittions/`. |
+| Sample run fails with `missing-policy-block` | A sourced PDF was placed in `data/policies/`. Keep uploads under `submissions/`. |
 
 The stored page at http://localhost:8080/graph lists the organization, catalogs, frameworks, profiles, control groups, controls, and policy statements. Compare it with:
 
